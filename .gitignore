@@ -1,0 +1,15 @@
+.env
+__pycache__/
+*.pyc
+.claude/
+
+venv/
+
+# Datos crudos pesados (se regeneran con main.py)
+data/parquet/odds/
+data/parquet/fixtures/
+data/parquet/standings/
+
+# Datasets de version antigua y logs
+data/parquet/*_enriched/
+logs/*.log
