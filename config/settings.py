@@ -1,6 +1,6 @@
 """Configuración central del pipeline de ingesta Sportmonks.
 
-Toda credencial se lee de variables de entorno (.env). NUNCA hardcodear el token.
+Toda credencial se lee de variables de entorno (.env)
 """
 import os
 from pathlib import Path
@@ -23,7 +23,7 @@ LOG_DIR = BASE_DIR / "logs"
 for _d in (RAW_DIR, PARQUET_DIR, LOG_DIR):
     _d.mkdir(parents=True, exist_ok=True)
 
-# --- Catálogo de competiciones (plan Free, verificado por diagnóstico) ------
+# --- Catálogo de competiciones (plan Free) ------
 LEAGUES = {
     "Danish Superliga": 271,
     "Scottish Premiership": 501,

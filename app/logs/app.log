@@ -1,0 +1,2 @@
+2026-08-10 21:48:57,877 | ERROR | Mart no encontrado: data\parquet\marts\fixtures_features.parquet
+2026-08-10 21:52:48,794 | WARNING | Carga lenta: fixtures_features tardó 6.14s (objetivo < 3.0s)
