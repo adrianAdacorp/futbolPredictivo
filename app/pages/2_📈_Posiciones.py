@@ -23,8 +23,14 @@ standings["league_name"] = standings["league_id"].map(league_map)
 # --- Filtros ---
 st.sidebar.header("Filtros")
 league = st.sidebar.selectbox("Liga", options=["Todas"] + sorted(fixtures["league_name"].unique().tolist()))
-teams_available = sorted(pd.concat([fixtures["home_team"], fixtures["away_team"]]).unique().tolist())
-teams = st.sidebar.multiselect("Equipo(s)", options=teams_available, default=teams_available[:5])
+
+# Equipo(s) depende de la liga elegida: evita combinaciones imposibles (ej. equipo danés + liga escocesa)
+fixtures_by_league = fixtures if league == "Todas" else fixtures[fixtures["league_name"] == league]
+teams_available = sorted(pd.concat([fixtures_by_league["home_team"], fixtures_by_league["away_team"]]).unique().tolist())
+# Preselección por defecto: los 5 primeros equipos (alfabético) de la liga ya filtrada,
+# solo para que el gráfico de evolución no aparezca vacío al entrar a la página.
+teams = st.sidebar.multiselect("Equipo(s) — para el gráfico de evolución", options=teams_available, default=teams_available[:5])
+
 
 df = fixtures.copy()
 standings_df = standings.copy()

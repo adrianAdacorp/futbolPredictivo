@@ -32,14 +32,19 @@ if df_full.empty:
 # --- Filtros ---
 st.sidebar.header("Filtros")
 league = st.sidebar.selectbox("Liga", options=["Todas"] + sorted(df_full["league_name"].unique().tolist()))
-teams_available = sorted(pd.concat([df_full["home_team"], df_full["away_team"]]).unique().tolist())
-teams = st.sidebar.multiselect("Equipo(s) — resaltar en tabla de sorpresas", options=teams_available, default=[])
-date_min, date_max = df_full["starting_at"].min().date(), df_full["starting_at"].max().date()
-date_range = st.sidebar.slider("Rango de fechas", min_value=date_min, max_value=date_max, value=(date_min, date_max))
 
 df = df_full.copy()
 if league != "Todas":
     df = validate_filters(df, league_name=league)
+
+# Equipo(s) depende de la liga elegida: evita combinaciones imposibles (ej. equipo danés + liga escocesa).
+# Este filtro solo resalta filas en la tabla de sorpresas; no acota los KPIs ni los gráficos superiores.
+teams_available = sorted(pd.concat([df["home_team"], df["away_team"]]).unique().tolist())
+teams = st.sidebar.multiselect("Equipo(s) — resaltar en tabla de sorpresas", options=teams_available, default=[])
+
+date_min, date_max = df_full["starting_at"].min().date(), df_full["starting_at"].max().date()
+date_range = st.sidebar.slider("Rango de fechas", min_value=date_min, max_value=date_max, value=(date_min, date_max))
+
 df = df[(df["starting_at"].dt.date >= date_range[0]) & (df["starting_at"].dt.date <= date_range[1])]
 
 if df.empty:

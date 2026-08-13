@@ -84,11 +84,10 @@ if len(teams_in_league) < 2:
 
 col1, col2 = st.sidebar.columns(2)
 team_a = col1.selectbox("Equipo A", options=teams_in_league, index=0)
-team_b = col2.selectbox("Equipo B", options=teams_in_league, index=1)
 
-if team_a == team_b:
-    st.warning("Selecciona dos equipos distintos en el filtro lateral para ver su historial de cruces.")
-    st.stop()
+# Equipo B excluye al ya elegido en Equipo A: evita la combinación imposible de comparar un equipo consigo mismo.
+teams_for_b = [t for t in teams_in_league if t != team_a]
+team_b = col2.selectbox("Equipo B", options=teams_for_b, index=0)
 
 h2h = fixtures[
     (fixtures["league_name"] == league_h2h)
