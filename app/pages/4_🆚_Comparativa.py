@@ -38,10 +38,11 @@ outcome_pct = outcome_pct.rename(columns={"H": "Gana el local", "D": "Empate", "
 outcome_long = outcome_pct.reset_index().melt(id_vars="league_name", var_name="Resultado", value_name="pct")
 
 st.plotly_chart(
-    grouped_bar(outcome_long, "league_name", "pct", "Resultado", "Resultados por liga", y_label="% de partidos"),
+    grouped_bar(outcome_long, "league_name", "pct", "Resultado", "Resultados por liga", y_label="% de partidos",
+                color_map={"Gana el local": "#22C55E", "Empate": "#F59E0B", "Gana el visitante": "#EF4444"},
+                value_suffix="%"),
     use_container_width=True,
 )
-
 st.divider()
 
 # ============================================================

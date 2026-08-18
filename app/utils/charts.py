@@ -30,9 +30,22 @@ def line_over_time(df: pd.DataFrame, date_col: str, value_col: str, color_col: s
     return fig
 
 
-def scatter_gap(df: pd.DataFrame, x_col: str, y_col: str, color_col: str, hover_col: str, title: str):
-    """Scatter genérico (ej. market_surprise vs. resultado)."""
-    return px.scatter(df, x=x_col, y=y_col, color=color_col, hover_data=[hover_col], title=title)
+def scatter_gap(df: pd.DataFrame, x_col: str, y_col: str, color_col: str, hover_col: str, title: str,
+                 x_label: str, y_label: str):
+    """Scatter genérico (ej. dispersión de mercado vs. sorpresa). x_label/y_label: etiquetas legibles."""
+    fig = px.scatter(df, x=x_col, y=y_col, color=color_col, hover_data=[hover_col], title=title,
+                      color_discrete_sequence=QUALITATIVE_PALETTE)
+    fig.update_layout(xaxis_title=x_label, yaxis_title=y_label, legend_title_text="")
+    return fig
+
+
+def month_trend_chart(df: pd.DataFrame, x_col: str, y_col: str, color_col: str, category_order: list,
+                       title: str, y_label: str):
+    """Línea de tendencia por mes de temporada (orden cronológico jul→may, no calendario ene→dic)."""
+    fig = px.line(df, x=x_col, y=y_col, color=color_col, markers=True, title=title,
+                   category_orders={x_col: category_order}, color_discrete_sequence=QUALITATIVE_PALETTE)
+    fig.update_layout(xaxis_title="", yaxis_title=y_label, legend_title_text="")
+    return fig
 
 
 def distribution_hist(df: pd.DataFrame, value_col: str, title: str, x_label: str, nbins: int = 20):
@@ -42,14 +55,19 @@ def distribution_hist(df: pd.DataFrame, value_col: str, title: str, x_label: str
     return fig
 
 
-def grouped_bar(df: pd.DataFrame, x_col: str, y_col: str, color_col: str, title: str, y_label: str):
-    """Barras agrupadas por categoría de color (ej. comparar ligas por tipo de resultado)."""
+def grouped_bar(df: pd.DataFrame, x_col: str, y_col: str, color_col: str, title: str, y_label: str,
+                 color_map=None, value_suffix="", decimals=0):
+    """
+    Barras agrupadas por categoría de color (ej. comparar ligas por tipo de resultado).
+    color_map: mapeo opcional {categoría: color} (ej. resultados 1X2); sin él usa la paleta cualitativa.
+    value_suffix: texto tras el número en la etiqueta de barra (ej. "%"); vacío por defecto.
+    decimals: decimales a mostrar en la etiqueta (0 para porcentajes, 2 para promedios de goles).
+    """
     fig = px.bar(df, x=x_col, y=y_col, color=color_col, barmode="group", title=title, text=y_col,
-                 color_discrete_map={"Gana el local": POSITIVE, "Empate": NEUTRAL, "Gana el visitante": NEGATIVE})
-    fig.update_traces(texttemplate="%{text:.0f}%", textposition="outside", cliponaxis=False)
+                 color_discrete_map=color_map, color_discrete_sequence=QUALITATIVE_PALETTE)
+    fig.update_traces(texttemplate=f"%{{text:.{decimals}f}}{value_suffix}", textposition="outside", cliponaxis=False)
     fig.update_layout(xaxis_title="", yaxis_title=y_label, legend_title_text="")
     return fig
-
 
 def diverging_bar_by_team(df: pd.DataFrame, team_col: str, value_col: str, title: str, x_label: str, top_n: int = 10):
     """
